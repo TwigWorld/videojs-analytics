@@ -32,6 +32,31 @@ This is the simplest case. Get the script in whatever way you prefer and include
 </script>
 ```
 
+### Available options
+
+There are two options you can pass to the plugin. The first is to configure which events you would like to trigger from videojs.
+This option is an array of the names of events.  Choose from the list below:
+
+```
+player.analytics({
+  events: [
+    'play',
+    'pause',
+    'volumechange',
+    'resize',
+    'error',
+    'ended',
+    'resize',
+    'resolutionchange',
+    'timeupdate'
+  ],
+  defaultCategoryName: 'Video'
+})
+```
+
+In the example above you can see that it is also possible to configure the default name for a category in Google Analytics.
+
+
 ### Browserify
 
 When using with Browserify, install videojs-analytics via npm and `require` the plugin as you would any other module.
