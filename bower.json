@@ -1,0 +1,13 @@
+{
+  "name": "videojs-analytics",
+  "author": "Adam Oliver &lt;mail@adamoliver.net&gt;",
+  "license": "MIT",
+  "main": [
+    "dist/videojs-analytics.min.js"
+  ],
+  "keywords": [
+    "videojs",
+    "videojs-plugin"
+  ]
+}
+
