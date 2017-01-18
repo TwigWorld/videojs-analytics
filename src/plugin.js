@@ -80,7 +80,7 @@ const analytics = function(options) {
 
     function resolutionchange() {
       let resolution = this.currentResolution();
-      let label = resolution.label ? resolution.label : 'Default';
+      let label = resolution.label ? resolution.label : options.defaultCategoryName;
 
       track('Quality', label);
     }
