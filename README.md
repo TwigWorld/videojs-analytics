@@ -49,13 +49,21 @@ player.analytics({
     'resize',
     'resolutionchange',
     'timeupdate'
-  ],
-  defaultCategoryName: 'Video'
+  ]
 })
 ```
 
-In the example above you can see that it is also possible to configure the default name for a category in Google Analytics.
+You can also add your own custom events which are not included in the above list. If you include any custom events the event sent to Google Analytics will be the name of the event.
 
+
+To configure the default category name that is sent use the `defaultCategoryName` property when initialising the plugin.
+
+```
+player.analytics({
+  defaultCategoryName: 'Video'
+})
+
+```
 
 ### Browserify
 
