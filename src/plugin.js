@@ -2,8 +2,12 @@ import videojs from 'video.js';
 
 // Default options for the plugin.
 const defaults = {
-    events: [],
-    defaultCategoryName: 'Video'
+  events: [],
+  defaultCategoryName: 'Video'
+};
+
+window.ga = window.ga || function() {
+  return void 0;
 };
 
 /**
@@ -20,127 +24,117 @@ const defaults = {
  */
 const analytics = function(options) {
 
-    options = videojs.mergeOptions(defaults, options);
+  options = videojs.mergeOptions(defaults, options);
 
-    this.ready(() => {
+  this.ready(() => {
 
-        let audioPlayer = this.isAudio();
-        let ads = this.ads;
-        let progress = {
-            quarter: false,
-            half: false,
-            threeQuarters: false
-        }
+    let progress = {
+      quarter: false,
+      half: false,
+      threeQuarters: false
+    };
 
-        let assetName = this.el().getAttribute('data-asset-name');
+    let assetName = this.el().getAttribute('data-asset-name');
 
-        if (options.events.indexOf('play') > -1) {
-            this.one('play', play);
-        }
-        if (options.events.indexOf('pause') > -1) {
-            this.on('pause', pause);
-        }
-        if (options.events.indexOf('volumechange') > -1) {
-            this.on('volumechange', volumechange);
-        }
-        if (options.events.indexOf('resize') > -1) {
-            this.on('resize', resize);
-        }
-        if (options.events.indexOf('error') > -1) {
-            this.on('error', error);
-        }
-        if (options.events.indexOf('ended') > -1) {
-            this.on('ended', ended);
-        }
-        if (options.events.indexOf('resize') > -1) {
-            this.on('resize', fullscreenchange);
-        }
-        if (options.events.indexOf('resolutionchange') > -1) {
-            this.on('resolutionchange', resolutionchange);
-        }
-        if (options.events.indexOf('timeupdate') > -1) {
-            this.on('timeupdate', timeupdate);
-        }
+    function track(event, category, label) {
+      if (!label) {
+        label = options.defaultCategoryName;
+      }
 
-        function play() {
-            track('Start');
-            track('Asset name', assetName);
-        }
+      if (!category) {
+        category = options.defaultCategoryName;
+      }
+      window.ga('send', 'event', event, category, label);
+    }
 
-        function pause() {
-            track('Pause');
-        }
+    function play() {
+      track('Start');
+      track('Asset name', assetName);
+    }
 
-        function ended() {
-            track('Finish');
-        }
+    function pause() {
+      track('Pause');
+    }
 
-        function volumechange() {
-            track('Volume change');
-        }
+    function ended() {
+      track('Finish');
+    }
 
-        function resize() {
-            track('Resize');
-        }
+    function volumechange() {
+      track('Volume change');
+    }
 
-        function error() {
-            track('Error');
-        }
+    function resize() {
+      track('Resize');
+    }
 
-        function fullscreenchange() {
-            let status = this.isFullscreen() ? 'Click' : 'Exit';
-            track('Fullscreen', status)
-        }
+    function error() {
+      track('Error');
+    }
 
-        function resolutionchange() {
-            let resolution = this.currentResolution();
-            let label = resolution.label ? resolution.label : 'Default';
-            track('Quality', label);
-        }
+    function fullscreenchange() {
+      let status = this.isFullscreen() ? 'Click' : 'Exit';
 
-        function timeupdate() {
-            let elapsed = Math.round( this.currentTime() );
-            let duration = Math.round( this.duration() );
-            let percent = Math.round( elapsed/duration*100 );
+      track('Fullscreen', status);
+    }
 
-            if (!progress.quarter && percent > 25) {
-                track('Percentage', 'Complete 25%');
-                progress.quarter = true;
-            }
+    function resolutionchange() {
+      let resolution = this.currentResolution();
+      let label = resolution.label ? resolution.label : 'Default';
 
-            if (!progress.half && percent > 50) {
-                track('Percentage', 'Complete 50%');
-                progress.half = true;
-            }
+      track('Quality', label);
+    }
 
-            if (!progress.threeQuarters && percent > 75) {
-                track('Percentage', 'Complete 75%');
-                progress.threeQuarters = true;
-            }
-        }
+    function timeupdate() {
+      let elapsed = Math.round(this.currentTime());
+      let duration = Math.round(this.duration());
+      let percent = Math.round(elapsed / duration * 100);
 
-        function track(event, category, label) {
+      if (!progress.quarter && percent > 25) {
+        track('Percentage', 'Complete 25%');
+        progress.quarter = true;
+      }
 
-            if ( !label ) {
-                label = options.defaultCategoryName;
-            }
+      if (!progress.half && percent > 50) {
+        track('Percentage', 'Complete 50%');
+        progress.half = true;
+      }
 
-            if ( !category ) {
-                category = options.defaultCategoryName;
-            }
+      if (!progress.threeQuarters && percent > 75) {
+        track('Percentage', 'Complete 75%');
+        progress.threeQuarters = true;
+      }
+    }
 
-            if (typeof ga !== 'undefined') {
-                ga('send', 'event', event, category, label);
-            } else {
-                console.warn('ga is undefined so no event has been sent', {
-                    event,
-                    category,
-                    label
-                });
-            }
-        }
+    if (options.events.indexOf('play') > -1) {
+      this.one('play', play);
+    }
+    if (options.events.indexOf('pause') > -1) {
+      this.on('pause', pause);
+    }
+    if (options.events.indexOf('volumechange') > -1) {
+      this.on('volumechange', volumechange);
+    }
+    if (options.events.indexOf('resize') > -1) {
+      this.on('resize', resize);
+    }
+    if (options.events.indexOf('error') > -1) {
+      this.on('error', error);
+    }
+    if (options.events.indexOf('ended') > -1) {
+      this.on('ended', ended);
+    }
+    if (options.events.indexOf('resize') > -1) {
+      this.on('resize', fullscreenchange);
+    }
+    if (options.events.indexOf('resolutionchange') > -1) {
+      this.on('resolutionchange', resolutionchange);
+    }
+    if (options.events.indexOf('timeupdate') > -1) {
+      this.on('timeupdate', timeupdate);
+    }
 
-    });
+  });
 
 };
 
