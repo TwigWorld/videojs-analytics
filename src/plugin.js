@@ -52,26 +52,6 @@ const analytics = function(options) {
       track('Asset name', assetName);
     }
 
-    function pause() {
-      track('Pause');
-    }
-
-    function ended() {
-      track('Finish');
-    }
-
-    function volumechange() {
-      track('Volume change');
-    }
-
-    function resize() {
-      track('Resize');
-    }
-
-    function error() {
-      track('Error');
-    }
-
     function fullscreenchange() {
       let status = this.isFullscreen() ? 'Click' : 'Exit';
 
@@ -106,32 +86,45 @@ const analytics = function(options) {
       }
     }
 
+    function handleEvent(e) {
+      track(e.type);
+    }
+
+    // Set up the custom event tracking that won't use handleEvents
+
     if (options.events.indexOf('play') > -1) {
       this.one('play', play);
+      options.events = options.events.filter((event) => {
+        return event !== 'play';
+      });
     }
-    if (options.events.indexOf('pause') > -1) {
-      this.on('pause', pause);
-    }
-    if (options.events.indexOf('volumechange') > -1) {
-      this.on('volumechange', volumechange);
-    }
-    if (options.events.indexOf('resize') > -1) {
-      this.on('resize', resize);
-    }
-    if (options.events.indexOf('error') > -1) {
-      this.on('error', error);
-    }
-    if (options.events.indexOf('ended') > -1) {
-      this.on('ended', ended);
-    }
-    if (options.events.indexOf('resize') > -1) {
-      this.on('resize', fullscreenchange);
-    }
-    if (options.events.indexOf('resolutionchange') > -1) {
+
+    if (options.events.indexOf('play') > -1) {
       this.on('resolutionchange', resolutionchange);
+      options.events = options.events.filter((event) => {
+        return event !== 'resolutionchange';
+      });
     }
+
+    if (options.events.indexOf('fullscreenchange') > -1) {
+      this.on('fullscreenchange', fullscreenchange);
+      options.events = options.events.filter((event) => {
+        return event !== 'fullscreenchange';
+      });
+    }
+
     if (options.events.indexOf('timeupdate') > -1) {
       this.on('timeupdate', timeupdate);
+      options.events = options.events.filter((event) => {
+        return event !== 'timeupdate';
+      });
+    }
+
+    // For any other event that doesn't require special processing
+    // we will use the handleEvent event handler
+
+    for (let event of options.events) {
+      this.on(event, handleEvent);
     }
 
   });
