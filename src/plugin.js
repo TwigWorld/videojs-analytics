@@ -3,6 +3,7 @@ import videojs from 'video.js';
 // Default options for the plugin.
 const defaults = {
   events: [],
+  assetName: 'Video',
   defaultCategoryName: 'Video'
 };
 
@@ -34,8 +35,6 @@ const analytics = function(options) {
       threeQuarters: false
     };
 
-    let assetName = this.el().getAttribute('data-asset-name');
-
     function track(event, category, label) {
       if (!label) {
         label = options.defaultCategoryName;
@@ -49,17 +48,26 @@ const analytics = function(options) {
 
     function play() {
       track('Start');
-      track('Asset name', assetName);
+      track('Asset name', options.assetName);
     }
 
     function fullscreenchange() {
-      let status = this.isFullscreen() ? 'Click' : 'Exit';
+      let status = !this.isFullscreen() ? 'Click' : 'Exit';
 
       track('Fullscreen', status);
     }
 
     function resolutionchange() {
-      let resolution = this.currentResolution();
+      let resolution = {
+        label: ''
+      };
+
+      // It's possible that resolutionchange is used as an event where
+      // the video object doesn't have currentResolution
+      // so we need to check for it's existance first.
+      if (this.currentResolution) {
+        resolution = this.currentResolution();
+      }
       let label = resolution.label ? resolution.label : options.defaultCategoryName;
 
       track('Quality', label);
@@ -99,7 +107,7 @@ const analytics = function(options) {
       });
     }
 
-    if (options.events.indexOf('play') > -1) {
+    if (options.events.indexOf('resolutionchange') > -1) {
       this.on('resolutionchange', resolutionchange);
       options.events = options.events.filter((event) => {
         return event !== 'resolutionchange';

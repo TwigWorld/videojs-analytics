@@ -6,7 +6,7 @@
   <link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">
 </head>
 <body>
-  <video id="videojs-analytics-player" class="video-js vjs-default-skin" controls data-asset-name="Seagulls">
+  <video id="videojs-analytics-player" class="video-js vjs-default-skin" controls>
     <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
     <source src="//vjs.zencdn.net/v/oceans.webm" type='video/webm'>
   </video>
@@ -33,8 +33,10 @@
           'resize',
           'resolutionchange',
           'timeupdate'
-        ]
+        ],
+        assetName: 'Seagulls video'
       });
+
     }(window, window.videojs));
   </script>
 </body>

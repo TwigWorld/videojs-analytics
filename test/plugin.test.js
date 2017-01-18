@@ -50,5 +50,153 @@ QUnit.test('registers itself with video.js', function(assert) {
 
   // Tick the clock forward enough to trigger the player to be "ready".
   this.clock.tick(1);
+});
 
+QUnit.test('the play event calls ga', function(assert) {
+  assert.expect(4);
+
+  assert.strictEqual(
+    Player.prototype.analytics,
+    plugin,
+    'videojs-analytics plugin was registered'
+  );
+
+  this.player.analytics({
+    events: [
+      'play'
+    ],
+    assetName: 'Test video'
+  });
+
+  // Tick the clock forward enough to trigger the player to be "ready".
+  this.clock.tick(1);
+
+  sinon.stub(window, 'ga');
+
+  this.player.trigger('play');
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Start', 'Video', 'Video'),
+    'ga should have been called with the start event'
+  );
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Asset name', 'Test video'),
+    'ga should have been called with the asset name event'
+  );
+
+  assert.ok(
+    window.ga.calledTwice,
+    'ga should have been called twice'
+  );
+
+  window.ga.restore();
+});
+
+QUnit.test('custom events should call ga', function(assert) {
+  assert.expect(3);
+
+  assert.strictEqual(
+    Player.prototype.analytics,
+    plugin,
+    'videojs-analytics plugin was registered'
+  );
+
+  this.player.analytics({
+    events: [
+      'customevent'
+    ],
+    assetName: 'Test video'
+  });
+
+  // Tick the clock forward enough to trigger the player to be "ready".
+  this.clock.tick(1);
+
+  sinon.stub(window, 'ga');
+
+  this.player.trigger('customevent');
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'customevent', 'Video', 'Video'),
+    'ga should have been called with the customevent event'
+  );
+
+  assert.ok(
+    window.ga.calledOnce,
+    'ga should have been called once'
+  );
+
+  window.ga.restore();
+});
+
+QUnit.test('fullscreenchange events should call ga', function(assert) {
+  assert.expect(3);
+
+  assert.strictEqual(
+    Player.prototype.analytics,
+    plugin,
+    'videojs-analytics plugin was registered'
+  );
+
+  this.player.analytics({
+    events: [
+      'fullscreenchange'
+    ],
+    assetName: 'Test video'
+  });
+
+  // Tick the clock forward enough to trigger the player to be "ready".
+  this.clock.tick(1);
+
+  sinon.stub(window, 'ga');
+
+  this.player.trigger('fullscreenchange');
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Fullscreen', 'Click', 'Video'),
+    'ga should have been called with the customevent event'
+  );
+
+  assert.ok(
+    window.ga.calledOnce,
+    'ga should have been called once'
+  );
+
+  window.ga.restore();
+});
+
+QUnit.test('resolutionchange should call ga', function(assert) {
+  assert.expect(3);
+
+  assert.strictEqual(
+    Player.prototype.analytics,
+    plugin,
+    'videojs-analytics plugin was registered'
+  );
+
+  this.player.analytics({
+    events: [
+      'resolutionchange'
+    ],
+    assetName: 'Test video'
+  });
+
+  // Tick the clock forward enough to trigger the player to be "ready".
+  this.clock.tick(1);
+
+  sinon.stub(window, 'ga');
+
+  this.player.trigger('resolutionchange');
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Quality', 'Video', 'Video'),
+    'ga should have been called with the resolutionchange event'
+  );
+
+  assert.ok(
+    window.ga.calledOnce,
+    'ga should have been called once'
+  );
+
+  window.ga.restore();
 });
