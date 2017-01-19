@@ -42,6 +42,7 @@ player.analytics({
   events: [
     'play',
     'pause',
+    'ended',
     'volumechange',
     'resize',
     'error',
@@ -56,11 +57,12 @@ player.analytics({
 You can also add your own custom events which are not included in the above list. If you include any custom events the event sent to Google Analytics will be the name of the event.
 
 
-To configure the default category name that is sent use the `defaultCategoryName` property when initialising the plugin.
+To configure the default category names for audio and video files use the `defaultAudioCategory` `defaultVideoCategory` properties when initialising the plugin.
 
 ```
 player.analytics({
-  defaultCategoryName: 'Video'
+  defaultAudioCategory: 'Audio',
+  defaultVideoCategory: 'Video'
 })
 
 ```

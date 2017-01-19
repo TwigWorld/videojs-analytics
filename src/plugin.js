@@ -4,7 +4,8 @@ import videojs from 'video.js';
 const defaults = {
   events: [],
   assetName: 'Video',
-  defaultCategoryName: 'Video'
+  defaultVideoCategory: 'Video',
+  defaultAudioCategory: 'Audio'
 };
 
 window.ga = window.ga || function() {
@@ -36,10 +37,10 @@ const analytics = function(options) {
     };
 
     function track(player, action, label) {
-      let category = 'Video';
+      let category = options.defaultVideoCategory;
 
       if (player.isAudio()) {
-        category = 'Audio';
+        category = options.defaultAudioCategory;
       }
 
       if (!label) {
