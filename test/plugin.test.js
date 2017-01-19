@@ -29,11 +29,13 @@ QUnit.module('videojs-analytics', {
     this.video = document.createElement('video');
     this.fixture.appendChild(this.video);
     this.player = videojs(this.video);
+    sinon.stub(window, 'ga');
   },
 
   afterEach() {
     this.player.dispose();
     this.clock.restore();
+    window.ga.restore();
   }
 });
 
@@ -71,8 +73,6 @@ QUnit.test('the play event calls ga', function(assert) {
   // Tick the clock forward enough to trigger the player to be "ready".
   this.clock.tick(1);
 
-  sinon.stub(window, 'ga');
-
   this.player.trigger('play');
 
   assert.ok(
@@ -89,8 +89,6 @@ QUnit.test('the play event calls ga', function(assert) {
     window.ga.calledTwice,
     'ga should have been called twice'
   );
-
-  window.ga.restore();
 });
 
 QUnit.test('custom events should call ga', function(assert) {
@@ -112,8 +110,6 @@ QUnit.test('custom events should call ga', function(assert) {
   // Tick the clock forward enough to trigger the player to be "ready".
   this.clock.tick(1);
 
-  sinon.stub(window, 'ga');
-
   this.player.trigger('customevent');
 
   assert.ok(
@@ -125,8 +121,6 @@ QUnit.test('custom events should call ga', function(assert) {
     window.ga.calledOnce,
     'ga should have been called once'
   );
-
-  window.ga.restore();
 });
 
 QUnit.test('fullscreenchange events should call ga', function(assert) {
@@ -148,8 +142,6 @@ QUnit.test('fullscreenchange events should call ga', function(assert) {
   // Tick the clock forward enough to trigger the player to be "ready".
   this.clock.tick(1);
 
-  sinon.stub(window, 'ga');
-
   this.player.trigger('fullscreenchange');
 
   assert.ok(
@@ -161,8 +153,6 @@ QUnit.test('fullscreenchange events should call ga', function(assert) {
     window.ga.calledOnce,
     'ga should have been called once'
   );
-
-  window.ga.restore();
 });
 
 QUnit.test('resolutionchange should call ga', function(assert) {
@@ -184,8 +174,6 @@ QUnit.test('resolutionchange should call ga', function(assert) {
   // Tick the clock forward enough to trigger the player to be "ready".
   this.clock.tick(1);
 
-  sinon.stub(window, 'ga');
-
   this.player.trigger('resolutionchange');
 
   assert.ok(
@@ -197,6 +185,136 @@ QUnit.test('resolutionchange should call ga', function(assert) {
     window.ga.calledOnce,
     'ga should have been called once'
   );
+});
 
-  window.ga.restore();
+QUnit.test(`timeupdate should call ga when
+  player is more than quater way through`, function(assert) {
+  assert.expect(3);
+
+  assert.strictEqual(
+    Player.prototype.analytics,
+    plugin,
+    'videojs-analytics plugin was registered'
+  );
+
+  this.player.analytics({
+    events: [
+      'timeupdate'
+    ],
+    assetName: 'Test video'
+  });
+
+  // Tick the clock forward enough to trigger the player to be "ready".
+  this.clock.tick(1);
+
+  this.player.duration = function() {
+    return 100;
+  };
+  this.player.currentTime = function() {
+    return 26;
+  };
+
+  this.player.trigger('timeupdate');
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 25%', 'Video'),
+    'ga should have been called for 25% with the timeupdate event'
+  );
+
+  assert.ok(
+    window.ga.calledOnce,
+    'ga should have been called twice'
+  );
+});
+
+QUnit.test(`timeupdate should call ga when
+  player is more than half way through`, function(assert) {
+  assert.expect(4);
+
+  assert.strictEqual(
+    Player.prototype.analytics,
+    plugin,
+    'videojs-analytics plugin was registered'
+  );
+
+  this.player.analytics({
+    events: [
+      'timeupdate'
+    ],
+    assetName: 'Test video'
+  });
+
+  // Tick the clock forward enough to trigger the player to be "ready".
+  this.clock.tick(1);
+
+  this.player.duration = function() {
+    return 100;
+  };
+  this.player.currentTime = function() {
+    return 55;
+  };
+  this.player.trigger('timeupdate');
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 25%', 'Video'),
+    'ga should have been called for 25% with the timeupdate event'
+  );
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 50%', 'Video'),
+    'ga should have been called for 50% with the timeupdate event'
+  );
+
+  assert.ok(
+    window.ga.calledTwice,
+    'ga should have been called twice'
+  );
+});
+
+QUnit.test('timeupdate should call ga when player is complete', function(assert) {
+  assert.expect(5);
+
+  assert.strictEqual(
+    Player.prototype.analytics,
+    plugin,
+    'videojs-analytics plugin was registered'
+  );
+
+  this.player.analytics({
+    events: [
+      'timeupdate'
+    ],
+    assetName: 'Test video'
+  });
+
+  // Tick the clock forward enough to trigger the player to be "ready".
+  this.clock.tick(1);
+
+  this.player.duration = function() {
+    return 100;
+  };
+  this.player.currentTime = function() {
+    return 100;
+  };
+  this.player.trigger('timeupdate');
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 25%', 'Video'),
+    'ga should have been called for 25% with the timeupdate event'
+  );
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 50%', 'Video'),
+    'ga should have been called for 50% with the timeupdate event'
+  );
+
+  assert.ok(
+    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 75%', 'Video'),
+    'ga should have been called for 75% with the timeupdate event'
+  );
+
+  assert.ok(
+    window.ga.calledThrice,
+    'ga should have been called three times'
+  );
 });
