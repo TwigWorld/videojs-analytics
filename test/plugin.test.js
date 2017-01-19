@@ -76,12 +76,12 @@ QUnit.test('the play event calls ga', function(assert) {
   this.player.trigger('play');
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Start', 'Video', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'General', 'Start'),
     'ga should have been called with the start event'
   );
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Asset name', 'Test video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Asset name', 'Test video'),
     'ga should have been called with the asset name event'
   );
 
@@ -113,7 +113,7 @@ QUnit.test('custom events should call ga', function(assert) {
   this.player.trigger('customevent');
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'customevent', 'Video', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Customevent', ''),
     'ga should have been called with the customevent event'
   );
 
@@ -145,7 +145,7 @@ QUnit.test('fullscreenchange events should call ga', function(assert) {
   this.player.trigger('fullscreenchange');
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Fullscreen', 'Click', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Fullscreen', 'Click'),
     'ga should have been called with the customevent event'
   );
 
@@ -177,7 +177,7 @@ QUnit.test('resolutionchange should call ga', function(assert) {
   this.player.trigger('resolutionchange');
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Quality', 'Video', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Quality', 'Default'),
     'ga should have been called with the resolutionchange event'
   );
 
@@ -217,7 +217,7 @@ QUnit.test(`timeupdate should call ga when
   this.player.trigger('timeupdate');
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 25%', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Percentage', 'Complete 25%'),
     'ga should have been called for 25% with the timeupdate event'
   );
 
@@ -256,12 +256,12 @@ QUnit.test(`timeupdate should call ga when
   this.player.trigger('timeupdate');
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 25%', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Percentage', 'Complete 25%'),
     'ga should have been called for 25% with the timeupdate event'
   );
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 50%', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Percentage', 'Complete 50%'),
     'ga should have been called for 50% with the timeupdate event'
   );
 
@@ -299,17 +299,17 @@ QUnit.test('timeupdate should call ga when player is complete', function(assert)
   this.player.trigger('timeupdate');
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 25%', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Percentage', 'Complete 25%'),
     'ga should have been called for 25% with the timeupdate event'
   );
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 50%', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Percentage', 'Complete 50%'),
     'ga should have been called for 50% with the timeupdate event'
   );
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Percentage', 'Complete 75%', 'Video'),
+    window.ga.calledWith('send', 'event', 'Video', 'Percentage', 'Complete 75%'),
     'ga should have been called for 75% with the timeupdate event'
   );
 

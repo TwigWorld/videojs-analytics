@@ -35,26 +35,37 @@ const analytics = function(options) {
       threeQuarters: false
     };
 
-    function track(event, category, label) {
-      if (!label) {
-        label = options.defaultCategoryName;
+    function track(player, action, label) {
+      let category = 'Video';
+
+      if (player.isAudio()) {
+        category = 'Audio';
       }
 
-      if (!category) {
-        category = options.defaultCategoryName;
+      if (!label) {
+        label = '';
       }
-      window.ga('send', 'event', event, category, label);
+
+      window.ga('send', 'event', category, action, label);
     }
 
     function play() {
-      track('Start');
-      track('Asset name', options.assetName);
+      track(this, 'General', 'Start');
+      track(this, 'Asset name', options.assetName);
+    }
+
+    function pause() {
+      track(this, 'General', 'Pause');
+    }
+
+    function ended() {
+      track(this, 'General', 'Finish');
     }
 
     function fullscreenchange() {
       let status = !this.isFullscreen() ? 'Click' : 'Exit';
 
-      track('Fullscreen', status);
+      track(this, 'Fullscreen', status);
     }
 
     function resolutionchange() {
@@ -68,9 +79,9 @@ const analytics = function(options) {
       if (this.currentResolution) {
         resolution = this.currentResolution();
       }
-      let label = resolution.label ? resolution.label : options.defaultCategoryName;
+      let label = resolution.label ? resolution.label : 'Default';
 
-      track('Quality', label);
+      track(this, 'Quality', label);
     }
 
     function timeupdate() {
@@ -79,23 +90,25 @@ const analytics = function(options) {
       let percent = Math.round(elapsed / duration * 100);
 
       if (!progress.quarter && percent > 25) {
-        track('Percentage', 'Complete 25%');
+        track(this, 'Percentage', 'Complete 25%');
         progress.quarter = true;
       }
 
       if (!progress.half && percent > 50) {
-        track('Percentage', 'Complete 50%');
+        track(this, 'Percentage', 'Complete 50%');
         progress.half = true;
       }
 
       if (!progress.threeQuarters && percent > 75) {
-        track('Percentage', 'Complete 75%');
+        track(this, 'Percentage', 'Complete 75%');
         progress.threeQuarters = true;
       }
     }
 
     function handleEvent(e) {
-      track(e.type);
+      let uppercaseFirstChar = e.type.charAt(0).toUpperCase() + e.type.slice(1);
+
+      track(this, uppercaseFirstChar);
     }
 
     // Set up the custom event tracking that won't use handleEvents
@@ -104,6 +117,20 @@ const analytics = function(options) {
       this.one('play', play);
       options.events = options.events.filter((event) => {
         return event !== 'play';
+      });
+    }
+
+    if (options.events.indexOf('pause') > -1) {
+      this.one('pause', pause);
+      options.events = options.events.filter((event) => {
+        return event !== 'pause';
+      });
+    }
+
+    if (options.events.indexOf('ended') > -1) {
+      this.one('ended', ended);
+      options.events = options.events.filter((event) => {
+        return event !== 'ended';
       });
     }
 
