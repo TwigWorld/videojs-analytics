@@ -64,7 +64,7 @@ const analytics = function(options) {
     }
 
     function fullscreenchange() {
-      let status = !this.isFullscreen() ? 'Click' : 'Exit';
+      let status = this.isFullscreen() ? 'Click' : 'Exit';
 
       track(this, 'Fullscreen', status);
     }

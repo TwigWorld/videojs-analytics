@@ -145,7 +145,7 @@ QUnit.test('fullscreenchange events should call ga', function(assert) {
   this.player.trigger('fullscreenchange');
 
   assert.ok(
-    window.ga.calledWith('send', 'event', 'Video', 'Fullscreen', 'Click'),
+    window.ga.calledWith('send', 'event', 'Video', 'Fullscreen', 'Exit'),
     'ga should have been called with the customevent event'
   );
 
