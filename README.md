@@ -35,21 +35,62 @@ This is the simplest case. Get the script in whatever way you prefer and include
 ### Available options
 
 There are two options you can pass to the plugin. The first is to configure which events you would like to trigger from videojs.
-This option is an array of the names of events.  Choose from the list below:
+This option is an array objects for each event.  Each event contains the name of the event triggered by Video.js and a label and action which will be sent to Google Analytics.  Choose from the list below:
 
 ```
 player.analytics({
   events: [
-    'play',
-    'pause',
-    'ended',
-    'volumechange',
-    'resize',
-    'error',
-    'ended',
-    'resize',
-    'resolutionchange',
-    'timeupdate'
+    {
+      name: 'play',
+      label: 'video play',
+      action: 'play',
+    },
+    {
+      name: 'pause',
+      label: 'video pause',
+      action: 'pause',
+    },
+    {
+      name: 'ended',
+      label: 'video ended',
+      action: 'ended',
+    },
+    {
+      name: 'fullscreenchange',
+      label: {
+        open: 'video fullscreen open',
+        exit: 'video fullscreen exit'
+      },
+      action: 'fullscreen change',
+    },
+    {
+      name: 'volumechange',
+      label: 'volume changed',
+      action: 'volume changed',
+    },
+    {
+      name: 'resize',
+      label: 'resize',
+      action: 'resize',
+    },
+    {
+      name: 'error',
+      label: 'error',
+      action: 'error',
+    },
+    {
+      name: 'resize',
+      label: 'resize',
+      action: 'resize',
+    },
+    {
+      name: 'resolutionchange',
+      action: 'resolution change',
+    },
+    {
+      name: 'timeupdate',
+      action: 'time updated',
+    }
   ]
 })
 ```

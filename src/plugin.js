@@ -46,30 +46,29 @@ const analytics = function(options) {
       if (!label) {
         label = '';
       }
-
       window.ga('send', 'event', category, action, label);
     }
 
-    function play() {
-      track(this, 'General', 'Start');
-      track(this, 'Asset name', options.assetName);
+    function play(player, event) {
+      track(player, event.action, event.label);
+      track(player, 'Asset name', options.assetName);
     }
 
-    function pause() {
-      track(this, 'General', 'Pause');
+    function pause(player, event) {
+      track(player, event.action, event.label);
     }
 
-    function ended() {
-      track(this, 'General', 'Finish');
+    function ended(player, event) {
+      track(player, event.action, event.label);
     }
 
-    function fullscreenchange() {
-      let status = this.isFullscreen() ? 'Click' : 'Exit';
+    function fullscreenchange(player, event) {
+      const label = player.isFullscreen() ? event.label.open : event.label.exit;
 
-      track(this, 'Fullscreen', status);
+      track(player, event.action, label);
     }
 
-    function resolutionchange() {
+    function resolutionchange(player, event) {
       let resolution = {
         label: ''
       };
@@ -77,90 +76,123 @@ const analytics = function(options) {
       // It's possible that resolutionchange is used as an event where
       // the video object doesn't have currentResolution
       // so we need to check for it's existance first.
-      if (this.currentResolution) {
-        resolution = this.currentResolution();
+      if (player.currentResolution) {
+        resolution = player.currentResolution();
       }
       let label = resolution.label ? resolution.label : 'Default';
 
-      track(this, 'Quality', label);
+      track(player, event.action, label);
     }
 
-    function timeupdate() {
-      let elapsed = Math.round(this.currentTime());
-      let duration = Math.round(this.duration());
+    function timeupdate(player, event) {
+      let elapsed = Math.round(player.currentTime());
+      let duration = Math.round(player.duration());
       let percent = Math.round(elapsed / duration * 100);
 
       if (!progress.quarter && percent > 25) {
-        track(this, 'Percentage', 'Complete 25%');
+        track(player, event.action, 'Complete 25%');
         progress.quarter = true;
       }
 
       if (!progress.half && percent > 50) {
-        track(this, 'Percentage', 'Complete 50%');
+        track(player, event.action, 'Complete 50%');
         progress.half = true;
       }
 
       if (!progress.threeQuarters && percent > 75) {
-        track(this, 'Percentage', 'Complete 75%');
+        track(player, event.action, 'Complete 75%');
         progress.threeQuarters = true;
       }
     }
 
-    function handleEvent(e) {
-      let uppercaseFirstChar = e.type.charAt(0).toUpperCase() + e.type.slice(1);
+    function handleEvent(player, event) {
+      track(player, event.action, event.label);
+    }
 
-      track(this, uppercaseFirstChar);
+    function getEvent(eventName) {
+      return options.events.filter(function(event) {
+        return event.name === eventName;
+      })[0];
     }
 
     // Set up the custom event tracking that won't use handleEvents
 
-    if (options.events.indexOf('play') > -1) {
-      this.one('play', play);
+    const eventNames = options.events.map(function(event) {
+      return event.name || event;
+    });
+
+    if (eventNames.indexOf('play') > -1) {
+      const playEvent = getEvent('play');
+
+      this.one('play', function() {
+        play(this, playEvent);
+      });
       options.events = options.events.filter((event) => {
-        return event !== 'play';
+        return event.name !== 'play';
       });
     }
 
-    if (options.events.indexOf('pause') > -1) {
-      this.one('pause', pause);
+    if (eventNames.indexOf('pause') > -1) {
+      const pauseEvent = getEvent('pause');
+
+      this.one('pause', function() {
+        pause(this, pauseEvent);
+      });
       options.events = options.events.filter((event) => {
-        return event !== 'pause';
+        return event.name !== 'pause';
       });
     }
 
-    if (options.events.indexOf('ended') > -1) {
-      this.one('ended', ended);
+    if (eventNames.indexOf('ended') > -1) {
+      const endedEvent = getEvent('ended');
+
+      this.one('ended', function() {
+        ended(this, endedEvent);
+      });
       options.events = options.events.filter((event) => {
-        return event !== 'ended';
+        return event.name !== 'ended';
       });
     }
 
-    if (options.events.indexOf('resolutionchange') > -1) {
-      this.on('resolutionchange', resolutionchange);
+    if (eventNames.indexOf('resolutionchange') > -1) {
+      const resolutionchangeEvent = getEvent('resolutionchange');
+
+      this.on('resolutionchange', function() {
+        resolutionchange(this, resolutionchangeEvent);
+      });
       options.events = options.events.filter((event) => {
-        return event !== 'resolutionchange';
+        return event.name !== 'resolutionchange';
       });
     }
 
-    if (options.events.indexOf('fullscreenchange') > -1) {
-      this.on('fullscreenchange', fullscreenchange);
+    if (eventNames.indexOf('fullscreenchange') > -1) {
+      const fullscreenEvent = getEvent('fullscreenchange');
+
+      this.on('fullscreenchange', function() {
+        fullscreenchange(this, fullscreenEvent);
+      });
       options.events = options.events.filter((event) => {
-        return event !== 'fullscreenchange';
+        return event.name !== 'fullscreenchange';
       });
     }
 
-    if (options.events.indexOf('timeupdate') > -1) {
-      this.on('timeupdate', timeupdate);
+    if (eventNames.indexOf('timeupdate') > -1) {
+      const timeupdateEvent = getEvent('timeupdate');
+
+      this.on('timeupdate', function() {
+        timeupdate(this, timeupdateEvent);
+      });
       options.events = options.events.filter((event) => {
-        return event !== 'timeupdate';
+        return event.name !== 'timeupdate';
       });
     }
 
     // For any other event that doesn't require special processing
     // we will use the handleEvent event handler
-
     for (let event of options.events) {
-      this.on(event, handleEvent);
+      this.on(event.name, function() {
+        handleEvent(this, event);
+      });
     }
 
   });
