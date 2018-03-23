@@ -1,6 +1,6 @@
 # videojs-analytics
 
-Track Google Analytics events from video.js players
+Track Google Analytics or Global site tag [gtag][gtag] events from video.js players
 
 ## Installation
 
@@ -16,11 +16,22 @@ bower install  --save videojs-analytics
 
 ## Usage
 
-To include videojs-analytics on your website or web application, use any of the following methods.
+To include videojs-analytics on your website or web application, use any of the following methods. If you wish to use gtags you must pass in a mode property when setting up the player otherwise it will fallback to use Google Analytics.
+
+```html
+<script>
+    player.analytics({
+        mode: 'GTAG',
+        events: [...]
+      });
+</script>
+```
 
 ### `<script>` Tag
 
-This is the simplest case. Get the script in whatever way you prefer and include the plugin _after_ you include [video.js][videojs], so that the `videojs` global is available.
+#### Google Analytics
+
+To implement Google Analytics this is the simplest case. Get the script in whatever way you prefer and include the plugin _after_ you include [video.js][videojs], so that the `videojs` global is available.
 
 ```html
 <script src="//path/to/video.min.js"></script>
@@ -32,12 +43,86 @@ This is the simplest case. Get the script in whatever way you prefer and include
 </script>
 ```
 
+#### Global site tag (gtag)
+
+To implement GTags this is the simplest case. Get the script in whatever way you prefer and include the plugin _after_ you include [video.js][videojs], so that the `videojs` global is available. You also must request the google tag manager script with your tracking id in the head of the page
+
+```html
+<head>
+  ...
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.gtag =  function() { dataLayer.push(arguments); }
+    window.gtag('js', new Date());
+
+    window.gtag('config', 'GA_TRACKING_ID');
+  </script>
+</head>
+<body>
+  ...
+  <script src="//path/to/video.min.js"></script>
+  <script src="//path/to/videojs-analytics.min.js"></script>
+  <script>
+    player.analytics({
+        mode: 'GTAG',
+        events: [...]
+      });
+  </script>
+</body>
+```
+
+##### Custom dimensions
+
+If you wish to use custom dimensions simple pass in a object with your desired custom dimensions
+
+```html
+<head>
+  ...
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.gtag =  function() { dataLayer.push(arguments); }
+    window.gtag('js', new Date());
+    window.gtag('config', 'GA_TRACKING_ID', {
+      'custom_map': {
+        'dimension1': 'access_level',
+        'dimension2': 'uuid',
+        'dimension3': 'whatever_you_want'
+      },
+      'dimension1': 'DEBUG',
+      'dimension2': '12345',
+      'dimension3': 'SOME_VALUE'
+    });
+  </script>
+</head>
+<body>
+  ...
+  <script src="//path/to/video.min.js"></script>
+  <script src="//path/to/videojs-analytics.min.js"></script>
+  <script>
+    var player = window.player = videojs('videojs-analytics-player');
+      player.analytics({
+        mode: 'GTAG',
+        customDimensions: {
+          'access_level': 'DEBUG',
+          'uuid': '12345'
+        },
+        events: [...]
+      });
+  </script>
+</body>
+
+```
+
 ### Available options
+
+#### Google Analytics
 
 There are two options you can pass to the plugin. The first is to configure which events you would like to trigger from videojs.
 This option is an array objects for each event.  Each event contains the name of the event triggered by Video.js and a label and action which will be sent to Google Analytics.  Choose from the list below:
 
-```
+```javascript
 player.analytics({
   events: [
     {
@@ -143,3 +228,4 @@ MIT. Copyright (c) Adam Oliver &lt;mail@adamoliver.net&gt;
 
 
 [videojs]: http://videojs.com/
+[gtag]: https://developers.google.com/analytics/devguides/collection/gtagjs/
