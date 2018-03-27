@@ -4,6 +4,21 @@
   <meta charset="utf-8">
   <title>videojs-analytics Demo</title>
   <link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.gtag =  function() { dataLayer.push(arguments); }
+    window.gtag('js', new Date());
+
+    window.gtag('config', 'GA_TRACKING_ID', {
+      'custom_map': {
+        'dimension1': 'access_level',
+        'dimension2': 'uuid',
+      },
+      'dimension1': 'DEBUG',
+      'dimension2': '12345',
+    });
+  </script>
 </head>
 <body>
   <video id="videojs-analytics-player" class="video-js vjs-default-skin" controls>
@@ -17,18 +32,14 @@
   <script src="/node_modules/video.js/dist/video.js"></script>
   <script src="/dist/videojs-analytics.js"></script>
   <script>
-    (function(window, videojs) {
-      window.ga = function(send, event, event, category, label) {
-        console.log({
-          send: send,
-          event: event,
-          category: category,
-          label: label,
-        })
-        return true;
-      }
+    (function (window, videojs) {
       var player = window.player = videojs('videojs-analytics-player');
       player.analytics({
+        mode: 'GTAG',
+        customDimensions: {
+          'access_level': 'DEBUG',
+          'uuid': '12345'
+        },
         events: [
           {
             name: 'play',
