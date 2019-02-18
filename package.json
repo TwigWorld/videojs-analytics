@@ -6,6 +6,14 @@
   "generator-videojs-plugin": {
     "version": "2.2.0"
   },
+  "homepage": "https://github.com/TwigWorld/videojs-analytics",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TwigWorld/videojs-analytics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TwigWorld/videojs-analytics/issues"
+  },
   "scripts": {
     "prebuild": "npm run clean",
     "build": "npm-run-all -p build:*",
