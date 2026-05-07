@@ -1,3 +1,4 @@
+import window from 'global/window';
 import videojs from 'video.js';
 
 // Default options for the plugin.
@@ -35,11 +36,11 @@ window.gtag = window.gtag || function() {
  */
 const analytics = function(options) {
 
-  options = videojs.mergeOptions(defaults, options);
+  options = videojs.obj.merge(defaults, options);
 
   this.ready(() => {
 
-    let progress = {
+    const progress = {
       quarter: false,
       half: false,
       threeQuarters: false
@@ -47,7 +48,7 @@ const analytics = function(options) {
 
     function track(player, action, label) {
       let category = options.defaultVideoCategory;
-      let customDimensions = options.customDimensions || {};
+      const customDimensions = options.customDimensions || {};
 
       if (player.isAudio()) {
         category = options.defaultAudioCategory;
@@ -58,9 +59,11 @@ const analytics = function(options) {
       }
 
       if (options.mode === analyticsMode.googleTags) {
-        window.gtag('event', action,
-        /* eslint camelcase: 0 */
-        {event_category: category, event_label: label, customDimensions});
+        window.gtag(
+          'event', action,
+          /* eslint camelcase: 0 */
+          {event_category: category, event_label: label, customDimensions}
+        );
       } else {
         window.ga('send', 'event', category, action, label);
       }
@@ -96,15 +99,15 @@ const analytics = function(options) {
       if (player.currentResolution) {
         resolution = player.currentResolution();
       }
-      let label = resolution.label ? resolution.label : 'Default';
+      const label = resolution.label ? resolution.label : 'Default';
 
       track(player, event.action, label);
     }
 
     function timeupdate(player, event) {
-      let elapsed = Math.round(player.currentTime());
-      let duration = Math.round(player.duration());
-      let percent = Math.round(elapsed / duration * 100);
+      const elapsed = Math.round(player.currentTime());
+      const duration = Math.round(player.duration());
+      const percent = Math.round(elapsed / duration * 100);
 
       if (!progress.quarter && percent > 25) {
         track(player, event.action, 'Complete 25%');
@@ -206,7 +209,7 @@ const analytics = function(options) {
 
     // For any other event that doesn't require special processing
     // we will use the handleEvent event handler
-    for (let event of options.events) {
+    for (const event of options.events) {
       this.on(event.name, function() {
         handleEvent(this, event);
       });
@@ -217,7 +220,7 @@ const analytics = function(options) {
 };
 
 // Register the plugin with video.js.
-videojs.plugin('analytics', analytics);
+videojs.registerPlugin('analytics', analytics);
 
 // Include the version number.
 analytics.VERSION = '__VERSION__';

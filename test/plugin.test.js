@@ -1,4 +1,5 @@
 import document from 'global/document';
+import window from 'global/window';
 
 import QUnit from 'qunit';
 import sinon from 'sinon';
@@ -45,8 +46,8 @@ QUnit.test('registers itself with video.js', function(assert) {
   assert.expect(1);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -60,8 +61,8 @@ QUnit.test('the play event calls ga', function(assert) {
   assert.expect(5);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -106,8 +107,8 @@ QUnit.test('the pause event calls ga', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -147,8 +148,8 @@ QUnit.test('the ended event calls ga', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -189,8 +190,8 @@ QUnit.test('custom events should call ga', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -230,8 +231,8 @@ QUnit.test('fullscreenchange events should call ga', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -283,8 +284,8 @@ QUnit.test('resolutionchange should call ga', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -324,8 +325,8 @@ QUnit.test(`timeupdate should call ga when
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -372,8 +373,8 @@ QUnit.test(`timeupdate should call ga when
   assert.expect(5);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -423,8 +424,8 @@ QUnit.test('timeupdate should call ga when player is complete', function(assert)
   assert.expect(6);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -479,8 +480,8 @@ QUnit.test('Gtags: the play event calls gtags with correct event', function(asse
   assert.expect(5);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -505,7 +506,8 @@ QUnit.test('Gtags: the play event calls gtags with correct event', function(asse
   this.player.trigger('play');
   assert.ok(
     /* eslint camelcase: 0 */
-    window.gtag.calledWith('event', 'play',
+    window.gtag.calledWith(
+      'event', 'play',
       {
         event_category: 'Video',
         event_label: 'video play',
@@ -513,12 +515,14 @@ QUnit.test('Gtags: the play event calls gtags with correct event', function(asse
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
-      'gtag should have been called with video play event'
+      }
+    ),
+    'gtag should have been called with video play event'
   );
 
   assert.ok(
-    window.gtag.calledWith('event', 'Asset name',
+    window.gtag.calledWith(
+      'event', 'Asset name',
       {
         event_category: 'Video',
         event_label: 'Test video',
@@ -526,25 +530,22 @@ QUnit.test('Gtags: the play event calls gtags with correct event', function(asse
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
-      'gtag should have been called with asset name'
+      }
+    ),
+    'gtag should have been called with asset name'
   );
 
-  assert.ok(
-    window.gtag.calledTwice
-  );
+  assert.ok(window.gtag.calledTwice);
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test('Gtags: the play event does not call ga', function(assert) {
   assert.expect(2);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -568,17 +569,15 @@ QUnit.test('Gtags: the play event does not call ga', function(assert) {
 
   this.player.trigger('play');
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test('the pause event calls gtag', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -605,7 +604,8 @@ QUnit.test('the pause event calls gtag', function(assert) {
 
   assert.ok(
     /* eslint camelcase: 0 */
-    window.gtag.calledWith('event', 'pause',
+    window.gtag.calledWith(
+      'event', 'pause',
       {
         event_category: 'Video',
         event_label: 'video pause',
@@ -613,7 +613,8 @@ QUnit.test('the pause event calls gtag', function(assert) {
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called with the pause event'
   );
 
@@ -622,17 +623,15 @@ QUnit.test('the pause event calls gtag', function(assert) {
     'gtag should have been called once'
   );
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test('the ended event calls gtag', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -658,7 +657,8 @@ QUnit.test('the ended event calls gtag', function(assert) {
   this.player.trigger('ended');
 
   assert.ok(
-    window.gtag.calledWith('event', 'ended',
+    window.gtag.calledWith(
+      'event', 'ended',
       {
         event_category: 'Video',
         event_label: 'video ended',
@@ -666,7 +666,8 @@ QUnit.test('the ended event calls gtag', function(assert) {
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called with the ended event'
   );
 
@@ -675,9 +676,7 @@ QUnit.test('the ended event calls gtag', function(assert) {
     'gtag should have been called once'
   );
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test('custom events should call gtag', function(assert) {
@@ -685,8 +684,8 @@ QUnit.test('custom events should call gtag', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -712,7 +711,8 @@ QUnit.test('custom events should call gtag', function(assert) {
   this.player.trigger('customevent');
 
   assert.ok(
-    window.gtag.calledWith('event', 'custom event action',
+    window.gtag.calledWith(
+      'event', 'custom event action',
       {
         event_category: 'Video',
         event_label: 'custom event',
@@ -720,7 +720,8 @@ QUnit.test('custom events should call gtag', function(assert) {
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called with the customevent event'
   );
 
@@ -729,17 +730,15 @@ QUnit.test('custom events should call gtag', function(assert) {
     'gtag should have been called once'
   );
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test('fullscreenchange events should call gtag', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -771,7 +770,8 @@ QUnit.test('fullscreenchange events should call gtag', function(assert) {
   this.player.trigger('fullscreenchange');
 
   assert.ok(
-    window.gtag.calledWith('event', 'fullscreen change',
+    window.gtag.calledWith(
+      'event', 'fullscreen change',
       {
         event_category: 'Video',
         event_label: 'video fullscreen exit',
@@ -789,17 +789,15 @@ QUnit.test('fullscreenchange events should call gtag', function(assert) {
     'gtag should have been called once'
   );
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test('resolutionchange should call gtag', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -824,7 +822,8 @@ QUnit.test('resolutionchange should call gtag', function(assert) {
   this.player.trigger('resolutionchange');
 
   assert.ok(
-    window.gtag.calledWith('event', 'resolution change',
+    window.gtag.calledWith(
+      'event', 'resolution change',
       {
         event_category: 'Video',
         event_label: 'Default',
@@ -832,7 +831,8 @@ QUnit.test('resolutionchange should call gtag', function(assert) {
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called with the resolutionchange event'
   );
 
@@ -841,9 +841,7 @@ QUnit.test('resolutionchange should call gtag', function(assert) {
     'gtag should have been called once'
   );
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test(`timeupdate should call gtag when
@@ -851,8 +849,8 @@ QUnit.test(`timeupdate should call gtag when
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -884,7 +882,8 @@ QUnit.test(`timeupdate should call gtag when
   this.player.trigger('timeupdate');
 
   assert.ok(
-    window.gtag.calledWith('event', 'time updated',
+    window.gtag.calledWith(
+      'event', 'time updated',
       {
         event_category: 'Video',
         event_label: 'Complete 25%',
@@ -892,7 +891,8 @@ QUnit.test(`timeupdate should call gtag when
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called for 25% with the timeupdate event'
   );
 
@@ -901,9 +901,7 @@ QUnit.test(`timeupdate should call gtag when
     'gtag should have been called twice'
   );
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test(`timeupdate should call gtag when
@@ -911,8 +909,8 @@ QUnit.test(`timeupdate should call gtag when
   assert.expect(5);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -943,7 +941,8 @@ QUnit.test(`timeupdate should call gtag when
   this.player.trigger('timeupdate');
 
   assert.ok(
-    window.gtag.calledWith('event', 'time updated',
+    window.gtag.calledWith(
+      'event', 'time updated',
       {
         event_category: 'Video',
         event_label: 'Complete 25%',
@@ -951,12 +950,14 @@ QUnit.test(`timeupdate should call gtag when
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called for 25% with the timeupdate event'
   );
 
   assert.ok(
-    window.gtag.calledWith('event', 'time updated',
+    window.gtag.calledWith(
+      'event', 'time updated',
       {
         event_category: 'Video',
         event_label: 'Complete 50%',
@@ -964,7 +965,8 @@ QUnit.test(`timeupdate should call gtag when
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called for 50% with the timeupdate event'
   );
 
@@ -973,17 +975,15 @@ QUnit.test(`timeupdate should call gtag when
     'gtag should have been called twice'
   );
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test('timeupdate should call gtag when player is complete', function(assert) {
   assert.expect(6);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -1014,7 +1014,8 @@ QUnit.test('timeupdate should call gtag when player is complete', function(asser
   this.player.trigger('timeupdate');
 
   assert.ok(
-    window.gtag.calledWith('event', 'time updated',
+    window.gtag.calledWith(
+      'event', 'time updated',
       {
         event_category: 'Video',
         event_label: 'Complete 25%',
@@ -1022,12 +1023,14 @@ QUnit.test('timeupdate should call gtag when player is complete', function(asser
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called for 25% with the timeupdate event'
   );
 
   assert.ok(
-    window.gtag.calledWith('event', 'time updated',
+    window.gtag.calledWith(
+      'event', 'time updated',
       {
         event_category: 'Video',
         event_label: 'Complete 50%',
@@ -1035,12 +1038,14 @@ QUnit.test('timeupdate should call gtag when player is complete', function(asser
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called for 50% with the timeupdate event'
   );
 
   assert.ok(
-    window.gtag.calledWith('event', 'time updated',
+    window.gtag.calledWith(
+      'event', 'time updated',
       {
         event_category: 'Video',
         event_label: 'Complete 75%',
@@ -1048,7 +1053,8 @@ QUnit.test('timeupdate should call gtag when player is complete', function(asser
           accessLevel: 'DEBUG',
           uuid: '12345'
         }
-      }),
+      }
+    ),
     'gtag should have been called for 75% with the timeupdate event'
   );
 
@@ -1057,17 +1063,15 @@ QUnit.test('timeupdate should call gtag when player is complete', function(asser
     'ga should have been called three times'
   );
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
 
 QUnit.test('using no custom dimensions should call gtag', function(assert) {
   assert.expect(4);
 
   assert.strictEqual(
-    Player.prototype.analytics,
-    plugin,
+    typeof Player.prototype.analytics,
+    'function',
     'videojs-analytics plugin was registered'
   );
 
@@ -1090,12 +1094,14 @@ QUnit.test('using no custom dimensions should call gtag', function(assert) {
 
   assert.ok(
     /* eslint camelcase: 0 */
-    window.gtag.calledWith('event', 'pause',
+    window.gtag.calledWith(
+      'event', 'pause',
       {
         event_category: 'Video',
         event_label: 'video pause',
         customDimensions: { }
-      }),
+      }
+    ),
     'gtag should have been called with the pause event'
   );
 
@@ -1104,7 +1110,5 @@ QUnit.test('using no custom dimensions should call gtag', function(assert) {
     'gtag should have been called once'
   );
 
-  assert.ok(
-    window.ga.notCalled
-  );
+  assert.ok(window.ga.notCalled);
 });
