@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'cypress/browsers:node-20.18.0-chrome-130.0.6723.69-1-ff-131.0.3-edge-130.0.2849.56-1'
+            image 'cypress/browsers:latest'
             label 'docker'
             args '-u root'
         }
