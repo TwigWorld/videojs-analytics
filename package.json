@@ -1,5 +1,5 @@
 {
-  "name": "videojs-analytics",
+  "name": "@twigeducation/videojs-analytics",
   "version": "1.0.0",
   "description": "Track Google Analytics events from video.js players",
   "main": "cjs/plugin.js",
