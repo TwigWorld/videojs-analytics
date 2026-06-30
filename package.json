@@ -76,7 +76,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.13.16",
-    "@babel/core": "^7.14.0",
+    "@babel/core": "^7.29.6",
     "@babel/runtime": "^7.14.0",
     "@videojs/babel-config": "^1.0.2",
     "@videojs/generator-helpers": "~2.0.2",
